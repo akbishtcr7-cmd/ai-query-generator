@@ -19,10 +19,26 @@ const AIChat = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    // Scroll only the messages container itself, never the page.
+    // (scrollIntoView on bottomRef would scroll every scrollable
+    // ancestor, including the whole page, on mobile.)
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    if (isFirstRender.current) {
+      // Don't animate/scroll on initial mount (avoids jumping the
+      // page when the Chat screen first opens).
+      isFirstRender.current = false;
+      container.scrollTop = container.scrollHeight;
+      return;
+    }
+
+    container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+  }, [messages, loading]);
 
   const sendMessage = async (text) => {
     const userMsg = text || input.trim();
@@ -70,7 +86,7 @@ const AIChat = () => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto space-y-4 mb-4 min-h-0 max-h-96">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto space-y-4 mb-4 min-h-0 max-h-96">
         <AnimatePresence>
           {messages.map((msg, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
