@@ -98,3 +98,11 @@
   }
   @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 }
+select.input-field {
+  background-color: #12121f;
+  color-scheme: dark;
+}
+select.input-field option {
+  background-color: #12121f;
+  color: #e2e8f0;
+}
