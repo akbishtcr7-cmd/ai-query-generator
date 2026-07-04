@@ -14,6 +14,7 @@ import Chat from '../pages/Chat';
 import Sandbox from '../pages/Sandbox';
 import Admin from '../pages/Admin';
 import Profile from '../pages/Profile';
+import Settings from '../pages/Settings';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -53,6 +54,7 @@ const AppRoutes = () => (
       <Route path="chat" element={<Chat />} />
       <Route path="sandbox" element={<Sandbox />} />
       <Route path="profile" element={<Profile />} />
+      <Route path="settings" element={<Settings />} />
       <Route path="admin" element={<AdminRoute><Admin /></AdminRoute>} />
       <Route path="admin/users" element={<AdminRoute><Admin /></AdminRoute>} />
       <Route path="admin/audit" element={<AdminRoute><Admin /></AdminRoute>} />

@@ -14,7 +14,7 @@ const getGeminiClient = () => {
 
 const getGeminiModel = () => {
   const client = getGeminiClient();
-  return client.getGenerativeModel({ model: 'gemini-1.5-flash' });
+ return client.getGenerativeModel({ model: 'gemini-2.5-flash' });
 };
 
 module.exports = { getGeminiModel };

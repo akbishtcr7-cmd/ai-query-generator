@@ -41,10 +41,11 @@ const generateQuery = async (prompt, databaseType) => {
 Database Type: ${databaseType}
 Return ONLY valid JSON, no markdown formatting.`;
 
-  const result = await model.generateContent([
+  const result = await model.generateContent({
+  contents: [
     { role: 'user', parts: [{ text: SYSTEM_PROMPT + '\n\n' + userPrompt }] },
-  ]);
-
+  ],
+});
   const text = result.response.text().trim();
   
   // Strip markdown code blocks if present
