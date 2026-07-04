@@ -15,10 +15,10 @@ const QueryInput = ({ onGenerate, loading, selectedDb, onDbChange }) => {
   const [prompt, setPrompt] = useState('');
   const textareaRef = useRef(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!prompt.trim() || loading) return;
-    onGenerate(prompt.trim(), selectedDb);
+    await onGenerate(prompt.trim(), selectedDb);
   };
 
   const handleExample = (ex) => {

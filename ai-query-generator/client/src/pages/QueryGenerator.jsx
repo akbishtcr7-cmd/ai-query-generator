@@ -14,8 +14,12 @@ const QueryGenerator = () => {
   const [activeTab, setActiveTab] = useState('output');
 
   const handleGenerate = async (prompt, db) => {
-    await generateQuery(prompt, db);
-    setActiveTab('output');
+    try {
+      await generateQuery(prompt, db);
+      setActiveTab('output');
+    } catch {
+      // QueryContext owns the visible error state.
+    }
   };
 
   return (

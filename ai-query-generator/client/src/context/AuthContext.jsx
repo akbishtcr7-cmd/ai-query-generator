@@ -3,6 +3,31 @@ import { supabase } from '../lib/supabase';
 
 const AuthContext = createContext(null);
 
+const getAuthErrorMessage = (error) => {
+  const message = error?.message || '';
+  const code = error?.code || '';
+
+  if (code === 'invalid_credentials' || /invalid login credentials/i.test(message)) {
+    return 'Invalid email or password. If you just signed up, confirm your email first.';
+  }
+
+  if (code === 'email_not_confirmed' || /email not confirmed/i.test(message)) {
+    return 'Please confirm your email address before signing in.';
+  }
+
+  if (code === 'signup_disabled' || /signups not allowed/i.test(message)) {
+    return 'Sign ups are disabled for this Supabase project.';
+  }
+
+  if (code === 'weak_password' || /password/i.test(message)) {
+    return message;
+  }
+
+  return message || 'Authentication failed. Please try again.';
+};
+
+const toAuthError = (error) => new Error(getAuthErrorMessage(error));
+
 export const AuthProvider = ({ children }) => {
   const [user,    setUser]    = useState(null);
   const [session, setSession] = useState(null);
@@ -33,14 +58,14 @@ export const AuthProvider = ({ children }) => {
       password,
       options: { data: { full_name: name } },
     });
-    if (error) throw error;
+    if (error) throw toAuthError(error);
     return data;
   };
 
   // ── Login ─────────────────────────────────────────────────────────────────
   const login = async ({ email, password }) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    if (error) throw toAuthError(error);
     return data;
   };
 
@@ -63,7 +88,7 @@ export const AuthProvider = ({ children }) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-    if (error) throw error;
+    if (error) throw toAuthError(error);
   };
 
   // Helpers

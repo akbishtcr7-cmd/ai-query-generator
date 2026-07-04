@@ -4,7 +4,7 @@ import { QueryProvider } from './context/QueryContext';
 import AppRoutes from './routes/AppRoutes';
 
 const App = () => (
-  <BrowserRouter>
+  <BrowserRouter future={{ v7_relativeSplatPath: true }}>
     <AuthProvider>
       <QueryProvider>
         <AppRoutes />

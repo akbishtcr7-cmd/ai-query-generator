@@ -3,6 +3,21 @@ import { queryService } from '../services/queryService';
 
 const QueryContext = createContext(null);
 
+const getApiErrorMessage = (err, fallback) => {
+  if (err.response?.status === 429) {
+    return err.response?.data?.message || 'Too many requests. Please wait a minute and try again.';
+  }
+
+  if (typeof err.response?.data === 'string') {
+    return err.response.data;
+  }
+
+  return err.response?.data?.message
+    || err.response?.data?.error
+    || err.message
+    || fallback;
+};
+
 export const QueryProvider = ({ children }) => {
   const [currentQuery, setCurrentQuery] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,7 +32,7 @@ export const QueryProvider = ({ children }) => {
       setCurrentQuery(data.data);
       return data.data;
     } catch (err) {
-      const msg = err.response?.data?.message || 'Failed to generate query';
+      const msg = getApiErrorMessage(err, 'Failed to generate query');
       setError(msg);
       throw new Error(msg);
     } finally {

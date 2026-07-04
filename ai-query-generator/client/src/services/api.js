@@ -22,16 +22,16 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
-    if (error.response?.status === 401) {
-      // Try refreshing session once
+    if (error.response?.status === 401 && !error.config?._retry) {
+      error.config._retry = true;
       const { data } = await supabase.auth.refreshSession();
+
       if (data?.session) {
         error.config.headers.Authorization = `Bearer ${data.session.access_token}`;
         return api(error.config);
       }
-      // If refresh fails, redirect to login
-      window.location.href = '/login';
     }
+
     return Promise.reject(error);
   }
 );
